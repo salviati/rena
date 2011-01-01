@@ -61,7 +61,7 @@ var epsFormat = "%d" // Format string used to convert episode numbers into strin
 
 var chop = []string{
 	strings.Repeat("[0-9A-Fa-f]", 8), // CRC32
-	"[" + strings.Repeat("[0-9A-Fa-f]", 8) + "]", // CRC32
+	"\\[" + strings.Repeat("[0-9A-Fa-f]", 8) + "\\]", // CRC32
 	"360[pP]",
 	"480[pP]",
 	"576[pP]",
