@@ -26,7 +26,7 @@
 package main
 
 import (
-	"path"
+	"path/filepath"
 	"os"
 	"regexp"
 	"flag"
@@ -88,7 +88,7 @@ func init() {
 	}
 
 	if *yesToAll && *noToAll {
-		log.Exit("Yes or No, make up your mind!\n")
+		log.Fatal("Yes or No, make up your mind!\n")
 	}
 
 	filters = make([]*regexp.Regexp, len(chop))
@@ -118,7 +118,7 @@ func rena(dirName string) {
 
 	v := new(walkEnt)
 	ech := make(chan os.Error)
-	go func() { path.Walk(dirName, v, ech); close(ech) }()
+	go func() { filepath.Walk(dirName, v, ech); close(ech) }()
 	for e := range ech {
 		log.Println(e)
 	}
@@ -156,7 +156,7 @@ func main() {
 			log.Printf("[LOG] Renaming %s -> %s\n", oldpath, newpath)
 			err := os.Rename(oldpath, newpath)
 			if err != nil {
-				log.Exit(err, "\n")
+				log.Fatal(err, "\n")
 			}
 		}
 

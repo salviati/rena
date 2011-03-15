@@ -24,7 +24,7 @@
 package main
 
 import (
-	"path"
+	"path/filepath"
 	"strconv"
 	"regexp"
 	"template"
@@ -57,9 +57,9 @@ type Episode struct {
 	episodeNumbers   []int // Array of episode numbers
 }
 
-func NewEpisode(filepath string) *Episode {
+func NewEpisode(fpath string) *Episode {
 	e := new(Episode)
-	e.dir, e.oldname = path.Split(filepath)
+	e.dir, e.oldname = filepath.Split(fpath)
 	e.Rename()
 	return e
 }
@@ -68,7 +68,7 @@ func (e *Episode) String() string {
 	if e.newname == "" {
 		return ""
 	}
-	return path.Join(e.dir, e.newname)
+	return filepath.Join(e.dir, e.newname)
 }
 
 
@@ -99,8 +99,8 @@ func (e *Episode) Rename() {
 
 	t := template.MustParse(*templ, nil)
 	w := bytes.NewBufferString("")
-	t.Execute(&nameTemplate{n: estr}, w)
-	e.newname = string(w.Bytes()) + path.Ext(e.oldname)
+	t.Execute(w, &nameTemplate{n: estr})
+	e.newname = string(w.Bytes()) + filepath.Ext(e.oldname)
 }
 
 func (e *Episode) GetEpisodeNumbers() (r []int) {
@@ -109,5 +109,5 @@ func (e *Episode) GetEpisodeNumbers() (r []int) {
 }
 
 func (e *Episode) OldPath() string {
-	return path.Join(e.dir, e.oldname)
+	return filepath.Join(e.dir, e.oldname)
 }

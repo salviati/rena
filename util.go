@@ -43,7 +43,7 @@ func ynQuestion(format string, va ...interface{}) bool {
 		r := ""
 		_, err := fmt.Scanf("%s", &r)
 		if err != nil {
-			log.Exit(err)
+			log.Fatal(err)
 		}
 		r = strings.TrimSpace(r)
 
