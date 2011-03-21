@@ -42,7 +42,7 @@ func getEpisodeNumbers(filename string) []int {
 
 	for _, m := range matches {
 		newe, _ := strconv.Atoi(m)
-		if len(eps) > 1 && eps[len(eps)-1]+1 != newe {
+		if len(eps) > 0 && eps[len(eps)-1]+1 != newe {
 			break
 		}
 		eps = append(eps, newe)
@@ -73,7 +73,7 @@ func (e *Episode) String() string {
 
 
 type nameTemplate struct {
-	n string
+	N string
 }
 
 func (e *Episode) Rename() {
@@ -99,7 +99,7 @@ func (e *Episode) Rename() {
 
 	t := template.MustParse(*templ, nil)
 	w := bytes.NewBufferString("")
-	t.Execute(w, &nameTemplate{n: estr})
+	t.Execute(w, &nameTemplate{N: estr})
 	e.newname = string(w.Bytes()) + filepath.Ext(e.oldname)
 }
 
