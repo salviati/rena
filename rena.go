@@ -42,7 +42,8 @@ const (
 		"rena [options] file1/dir1 [file2/dir2 ... fileN/dirN]"
 )
 
-var templ = flag.String("t", "{n}", "Name template. Ex: Naruto-{N}. {N} will be replaced with episode number(s) (uses template.Parse). The extension of the old file will be prepended.")
+var templ = flag.String("t", "{N}", "Name template. Ex: Naruto-{N}. {N} will be replaced with episode number(s) (uses template.Parse). The extension of the old file 
+will be prepended.")
 var recurse = flag.Bool("r", false, "Recurse into subdirectories.")
 var eseperator = flag.String("s", "-", "Episode seperator.")
 var nDigits = flag.Int("N", 0, "Number of digits for (zero padded) episode numbers.")
