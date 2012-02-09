@@ -3,11 +3,16 @@ A tool crafted to rename files in anime/manga archives/dirs.
 Also can be used to list missing/duplicate episodes.
   
 To see what //would// be done
+
   `rena -n -r -N 3 -t 'Naruto_Shippuuden_{N}' /path/to/Naruto/Shippuden/dir`
+
 Make sure you're okay with this list. Then
+
   `rena -y -r -N 3 -t 'Naruto_Shippuuden_{N}' /path/to/Naruto/Shippuden/dir`
+
   (you can omit `-y` if you want to confirm each step)
 Just looking for duplicates? Or missing volumes in your manga collection?
+
   `rena -r -n /path/to/Naruto/manga/dir`
 
 ## How Does It Work?
