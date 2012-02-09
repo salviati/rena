@@ -27,7 +27,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"regexp"
-	"template"
+	"text/template"
 	"fmt"
 	"bytes"
 )
@@ -97,8 +97,9 @@ func (e *Episode) Rename() {
 		}
 	}
 
-	t := template.MustParse(*templ, nil)
+	t := template.Must(template.New("name").Parse(*templ))
 	w := bytes.NewBufferString("")
+	fmt.Println("@ ", estr, "-", *templ)
 	t.Execute(w, &nameTemplate{N: estr})
 	e.newname = string(w.Bytes()) + filepath.Ext(e.oldname)
 }

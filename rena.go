@@ -26,24 +26,23 @@
 package main
 
 import (
-	"path/filepath"
-	"os"
-	"regexp"
 	"flag"
 	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
-	"log"
 )
 
 const (
-	pkg, version, author, about, usage string = "rena", "20101231", "Utkan Güngördü",
+	pkg, version, author, about, usage string = "rena", "20120209", "Utkan Güngördü",
 		"rena(1) - Rename Archive. Tool crafted to rename files in anime/manga archives/dirs. Also can be used to list missing/duplicate episodes.",
 		"rena [options] file1/dir1 [file2/dir2 ... fileN/dirN]"
 )
 
-var templ = flag.String("t", "{N}", "Name template. Ex: Naruto-{N}. {N} will be replaced with episode number(s) (uses template.Parse). The extension of the old file 
-will be prepended.")
+var templ = flag.String("t", "{{.N}}", "Name template. Ex: Naruto-{{.N}}. {{.N}} will be replaced with episode number(s) (uses text/template). The extension of the old file will be prepended.")
 var recurse = flag.Bool("r", false, "Recurse into subdirectories.")
 var eseperator = flag.String("s", "-", "Episode seperator.")
 var nDigits = flag.Int("N", 0, "Number of digits for (zero padded) episode numbers.")
@@ -53,7 +52,6 @@ var showVersion = flag.Bool("version", false, "Show version info and quit.")
 var showHelp = flag.Bool("h", false, "Display this message.")
 var chopRegexp = flag.String("C", "", "Crop what matches to given regexp. Ex. usage: ^FMA2 to get rid of the troublesome numerical prefix 'FMA2'.")
 
-
 const MAXEPS = 1e4
 
 var filters []*regexp.Regexp
@@ -61,7 +59,7 @@ var episodes = make([]*Episode, 0, MAXEPS)
 var epsFormat = "%d" // Format string used to convert episode numbers into strings
 
 var chop = []string{
-	strings.Repeat("[0-9A-Fa-f]", 8), // CRC32
+	strings.Repeat("[0-9A-Fa-f]", 8),                 // CRC32
 	"\\[" + strings.Repeat("[0-9A-Fa-f]", 8) + "\\]", // CRC32
 	"360[pP]",
 	"480[pP]",
@@ -98,15 +96,17 @@ func init() {
 	}
 }
 
-
-type walkEnt struct{}
-
-func (*walkEnt) VisitDir(dname string, d *os.FileInfo) bool {
-	return *recurse
-}
-
-func (*walkEnt) VisitFile(fpath string, d *os.FileInfo) {
-	episodes = append(episodes, NewEpisode(fpath))
+func WalkFunc(path string, info os.FileInfo, err error) error {
+	if info.IsDir() {
+		if *recurse {
+			return nil
+		} else {
+			return filepath.SkipDir
+		}
+	}
+	
+	episodes = append(episodes, NewEpisode(path))
+	return nil
 }
 
 /* Recursively renames files under dirName. */
@@ -116,15 +116,10 @@ func rena(dirName string) {
 		log.Println(err)
 		return
 	}
-
-	v := new(walkEnt)
-	ech := make(chan os.Error)
-	go func() { filepath.Walk(dirName, v, ech); close(ech) }()
-	for e := range ech {
-		log.Println(e)
-	}
+	
+	err = filepath.Walk(dirName, WalkFunc)
+	if err != nil { log.Println(err) }
 }
-
 
 func main() {
 	for i := 0; i < flag.NArg(); i++ {
@@ -163,7 +158,7 @@ func main() {
 
 	}
 
-	sort.SortInts(alleps)
+	sort.Ints(alleps)
 	nmissing := 0
 	for i := 0; i < len(alleps)-1; i++ {
 		if alleps[i+1]-alleps[i] == 1 {
