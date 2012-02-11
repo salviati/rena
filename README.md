@@ -33,6 +33,12 @@ problem in general, which can be achieved using `-C '^\[[0-9A-Za-z]+\]'`.
 
 You see that there are various exceptions; and you may need to rename your archives in several steps, starting from these exceptions (once exceptions are handled, they're likely to be handled properly in a "normal" rename).
 
+## Installation
+
+You can install rena using the go command
+
+`go get github.com/salviati/rena`
+
 ## License
 GNU General Public License, version 3 or later.
 See the COPYING file for details.
