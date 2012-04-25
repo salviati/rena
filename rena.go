@@ -52,10 +52,8 @@ var showVersion = flag.Bool("version", false, "Show version info and quit.")
 var showHelp = flag.Bool("h", false, "Display this message.")
 var chopRegexp = flag.String("C", "", "Crop what matches to given regexp. Ex. usage: ^FMA2 to get rid of the troublesome numerical prefix 'FMA2'.")
 
-const MAXEPS = 1e4
-
 var filters []*regexp.Regexp
-var episodes = make([]*Episode, 0, MAXEPS)
+var episodes = make([]*Episode, 0)
 var epsFormat = "%d" // Format string used to convert episode numbers into strings
 
 var chop = []string{
@@ -126,7 +124,7 @@ func main() {
 		rena(flag.Arg(i))
 	}
 
-	alleps := make([]int, 0, MAXEPS)
+	alleps := make([]int, 0)
 
 	// Do renaming for all episodes
 	for _, e := range episodes {
@@ -138,9 +136,11 @@ func main() {
 		}
 
 		episodeNumbers := e.GetEpisodeNumbers()
-		for e := range episodeNumbers {
+		for _, e := range episodeNumbers {
 			alleps = append(alleps, e)
 		}
+		
+		fmt.Println(alleps)
 
 		log.Println("[INFO]", oldpath, "-> ", newpath)
 		if oldpath == newpath {

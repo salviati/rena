@@ -99,13 +99,13 @@ func (e *Episode) Rename() {
 
 	t := template.Must(template.New("name").Parse(*templ))
 	w := bytes.NewBufferString("")
-	fmt.Println("@ ", estr, "-", *templ)
 	t.Execute(w, &nameTemplate{N: estr})
 	e.newname = string(w.Bytes()) + filepath.Ext(e.oldname)
 }
 
 func (e *Episode) GetEpisodeNumbers() (r []int) {
-	copy(r, e.episodeNumbers) //FIXME
+	r = make([]int, len(e.episodeNumbers))
+	copy(r, e.episodeNumbers)
 	return
 }
 
